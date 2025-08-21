@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	Port string
+	Port  string
+	DBUrl string
 }
 
 func Load() Config {
@@ -16,5 +17,9 @@ func Load() Config {
 	if port == "" {
 		port = "8080"
 	}
-	return Config{Port: port}
+	dbUrl := os.Getenv("DATABASE_URL")
+	if dbUrl == "" {
+		panic("DB NOT FOUND")
+	}
+	return Config{Port: port, DBUrl: dbUrl}
 }
