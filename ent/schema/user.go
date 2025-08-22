@@ -18,6 +18,14 @@ func (User) Fields() []ent.Field {
 		field.String("name").
 			NotEmpty().
 			Comment("ユーザー名"),
+		field.String("email").
+			NotEmpty().
+			Unique().
+			Comment("メールアドレス"),
+		field.String("password_hash").
+			NotEmpty().
+			Sensitive().
+			Comment("パスワード"),
 		field.Time("created_at").
 			Default(time.Now).
 			Immutable().
