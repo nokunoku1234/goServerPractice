@@ -31,7 +31,7 @@ func Run() error {
 	}
 
 	e := echo.New()
-	h := handler.New(client)
+	h := handler.New(client, cfg)
 	router.Register(e, cfg, h) // ルート登録
 	return e.Start(":" + cfg.Port)
 }
