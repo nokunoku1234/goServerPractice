@@ -6,6 +6,7 @@ import (
 	"goServerPractice/internal/config"
 	"goServerPractice/internal/handler"
 	"goServerPractice/internal/router"
+	"goServerPractice/internal/validator"
 	"log"
 
 	"github.com/labstack/echo/v4"
@@ -31,6 +32,7 @@ func Run() error {
 	}
 
 	e := echo.New()
+	e.Validator = validator.NewCustomValidator()
 	h := handler.New(client, cfg)
 	router.Register(e, cfg, h) // ルート登録
 	return e.Start(":" + cfg.Port)
