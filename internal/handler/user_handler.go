@@ -76,7 +76,7 @@ func (h *Handler) CreateUser(c echo.Context) error {
 			Email:     u.Email,
 			CreatedAt: u.CreatedAt,
 		},
-		AccessToken:  accessToken,  // TODO: JWT実装後修正
-		RefreshToken: refreshToken, // TODO: JWT実装後修正
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 	})
 }
