@@ -11,4 +11,5 @@ func Register(e *echo.Echo, cfg config.Config, h *handler.Handler) {
 	// ヘルスチェック
 	e.GET("/health", h.HealthCheck)
 	e.POST("/users", h.CreateUser)
+	e.POST("/login", h.Login)
 }
