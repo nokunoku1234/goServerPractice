@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"goServerPractice/internal/model"
 	"goServerPractice/internal/service/auth"
 	"goServerPractice/internal/service/user"
 	"goServerPractice/internal/transport"
@@ -50,12 +51,15 @@ func (h *Handler) CreateUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	u, err := h.db.User.
-		Create().
-		SetEmail(req.Email).
-		SetPasswordHash(hashedPassword).
-		SetName("名無し").
-		Save(ctx)
+	u := &model.User{
+		Email:        req.Email,
+		PasswordHash: hashedPassword,
+		Name:         "名無し",
+	}
+	err = h.db.NewInsert().
+		Model(u).
+		Returning("*"). // 挿入後の全データを返す
+		Scan(ctx)
 	if err != nil {
 		// 一意制約違反など（schemaでEmail.Unique()にしている想定）
 		// ent.IsConstraintError(err) で分岐して 409 を返すなども可

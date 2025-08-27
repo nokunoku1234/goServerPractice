@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"database/sql"
 	"errors"
-	"goServerPractice/ent"
 	"goServerPractice/internal/service/auth"
 	"goServerPractice/internal/service/user"
 	"goServerPractice/internal/transport"
@@ -35,7 +35,7 @@ func (h *Handler) Login(c echo.Context) error {
 
 	u, err := user.FindByEmail(h.db, ctx, req.Email)
 	if err != nil {
-		if ent.IsNotFound(err) {
+		if errors.Is(err, sql.ErrNoRows) {
 			return c.JSON(http.StatusUnauthorized, transport.ErrorResponse{
 				Error: transport.ErrorBody{
 					Code:    "INVALID_CREDENTIALS",

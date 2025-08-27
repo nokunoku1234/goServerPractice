@@ -4,33 +4,36 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"goServerPractice/internal/model"
 	"log"
 
-	"entgo.io/ent/dialect"
-	entsql "entgo.io/ent/dialect/sql"
-	"goServerPractice/ent"
 	_ "github.com/lib/pq"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/extra/bundebug"
 )
 
-func NewClient(databaseURL string) (*ent.Client, error) {
+func NewDB(databaseURL string) (*bun.DB, error) {
 	db, err := sql.Open("postgres", databaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed opening connection to postgres: %v", err)
 	}
-	
-	drv := entsql.OpenDB(dialect.Postgres, db)
-	client := ent.NewClient(ent.Driver(drv))
-	
-	return client, nil
+
+	bunDb := bun.NewDB(db, pgdialect.New())
+	bunDb.AddQueryHook(bundebug.NewQueryHook(
+		bundebug.WithVerbose(true)))
+
+	return bunDb, err
 }
 
-func RunMigration(client *ent.Client) error {
+func RunMigration(db *bun.DB) error {
 	ctx := context.Background()
-	
-	if err := client.Schema.Create(ctx); err != nil {
+
+	_, err := db.NewCreateTable().Model((*model.User)(nil)).IfNotExists().Exec(ctx)
+	if err != nil {
 		return fmt.Errorf("failed creating schema resources: %v", err)
 	}
-	
+
 	log.Println("Database migration completed successfully")
 	return nil
 }

@@ -1,13 +1,14 @@
 package handler
 
 import (
-	"goServerPractice/ent"
 	"goServerPractice/internal/config"
+
+	"github.com/uptrace/bun"
 )
 
 type Handler struct {
-	db  *ent.Client
+	db  *bun.DB
 	cfg config.Config
 }
 
-func New(db *ent.Client, cfg config.Config) *Handler { return &Handler{db: db, cfg: cfg} }
+func New(db *bun.DB, cfg config.Config) *Handler { return &Handler{db: db, cfg: cfg} }
