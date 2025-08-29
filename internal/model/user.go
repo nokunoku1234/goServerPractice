@@ -15,6 +15,8 @@ type User struct {
 	PasswordHash string    `bun:"password_hash,notnull"`
 	Bio          string    `bun:"bio,notnull,default:''"`
 	Status       string    `bun:"status,notnull,default:'active'"`
+	Gender       string    `bun:"gender,default:''"`
+	Prefecture   string    `bun:"prefecture,default:''"`
 	CreatedAt    time.Time `bun:"created_at,notnull,default:current_timestamp"`
 	UpdatedAt    time.Time `bun:"updated_at,notnull,default:current_timestamp"`
 }

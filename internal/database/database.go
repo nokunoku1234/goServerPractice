@@ -44,6 +44,16 @@ func RunMigration(db *bun.DB) error {
 		log.Printf("Waring: Could not add status column: %v", err)
 	}
 
+	_, err = db.ExecContext(ctx, "ALTER TABLE users ADD COLUMN IF NOT EXISTS gender TEXT NOT NULL DEFAULT ''")
+	if err != nil {
+		log.Printf("Waring: Could not add gender column: %v", err)
+	}
+
+	_, err = db.ExecContext(ctx, "ALTER TABLE users ADD COLUMN IF NOT EXISTS prefecture TEXT NOT NULL DEFAULT ''")
+	if err != nil {
+		log.Printf("Waring: Could not add prefecture column: %v", err)
+	}
+
 	log.Println("Database migration completed successfully")
 	return nil
 }
