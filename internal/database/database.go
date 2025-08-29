@@ -34,6 +34,16 @@ func RunMigration(db *bun.DB) error {
 		return fmt.Errorf("failed creating schema resources: %v", err)
 	}
 
+	_, err = db.ExecContext(ctx, "ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NOT NULL DEFAULT ''")
+	if err != nil {
+		log.Printf("Waring: Could not add bio column: %v", err)
+	}
+
+	_, err = db.ExecContext(ctx, "ALTER TABLE users ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active'")
+	if err != nil {
+		log.Printf("Waring: Could not add status column: %v", err)
+	}
+
 	log.Println("Database migration completed successfully")
 	return nil
 }
