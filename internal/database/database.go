@@ -54,6 +54,13 @@ func RunMigration(db *bun.DB) error {
 		log.Printf("Waring: Could not add prefecture column: %v", err)
 	}
 
+	if _, err = db.ExecContext(ctx, `
+		CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_status_pref_gender_updated_at_desc
+		ON users (status, prefecture, gender, updated_at DESC)
+	`); err != nil {
+		log.Printf("Warning: could not create idx_users_status_pref_gender_updated_at_desc: %v", err)
+	}
+
 	log.Println("Database migration completed successfully")
 	return nil
 }
