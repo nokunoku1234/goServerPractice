@@ -27,7 +27,7 @@ type UserFilter struct {
 func (r *UserRepository) GetUsers(ctx context.Context, filter UserFilter) ([]model.User, int, error) {
 	var users []model.User
 
-	query := r.db.NewSelect().Model(&users)
+	query := r.db.NewSelect().Model(&users).Column("id", "name", "email", "status", "bio", "gender", "prefecture", "created_at", "updated_at")
 
 	if filter.Status != nil && *filter.Status != "" {
 		query = query.Where("status = ?", *filter.Status)
