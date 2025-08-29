@@ -84,3 +84,30 @@ func (h *Handler) CreateUser(c echo.Context) error {
 		RefreshToken: refreshToken,
 	})
 }
+
+func (h *Handler) GetUserProfile(c echo.Context) error {
+	userID := c.Get("user_id").(int)
+	ctx := c.Request().Context()
+	u, err := user.FindByID(h.db, ctx, userID)
+	if err != nil {
+		return c.JSON(404, map[string]string{
+			"error": "ユーザーが見つかりません",
+		})
+	}
+
+	userDTO := transport.UserProfileDTO{
+		ID:        u.ID,
+		Name:      u.Name,
+		Email:     u.Email,
+		Bio:       u.Bio,
+		Status:    u.Status,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
+	}
+
+	response := transport.GetUserProfileResponse{
+		User: userDTO,
+	}
+
+	return c.JSON(200, response)
+}

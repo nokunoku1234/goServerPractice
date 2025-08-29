@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -42,4 +43,25 @@ func GenerateRefreshToken(userID int, secret string, expires time.Duration) (str
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secret))
+}
+
+func ParseAccessToken(tokenString, secret string) (*AccessTokenClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method")
+		}
+		return []byte(secret), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	claims, ok := token.Claims.(*AccessTokenClaims)
+	if !ok || !token.Valid {
+		return nil, fmt.Errorf("invalid token")
+
+	}
+
+	return claims, nil
 }
