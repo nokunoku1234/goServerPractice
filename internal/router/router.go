@@ -17,4 +17,5 @@ func Register(e *echo.Echo, cfg config.Config, h *handler.Handler) {
 	protected := e.Group("")
 	protected.Use(middleware.JWTMiddleware(cfg.JWTSecret))
 	protected.GET("/users/profile", h.GetUserProfile)
+	protected.GET("/users", h.GetUserList)
 }
